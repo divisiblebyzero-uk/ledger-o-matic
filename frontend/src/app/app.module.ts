@@ -4,15 +4,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WelcomeScreenComponent } from './misc/welcome-screen/welcome-screen.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AccountsSummaryComponent } from './accounts/accounts-summary/accounts-summary.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WelcomeScreenComponent
+    WelcomeScreenComponent,
+    AccountsSummaryComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

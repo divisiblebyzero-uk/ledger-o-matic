@@ -1,0 +1,44 @@
+<div class="container">
+
+<ul>
+    <li>Assets</li>
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: accounts.ASSETS }"></ng-container>
+    </ul>
+    <li>Equity</li>
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: accounts.EQUITY }"></ng-container>
+    </ul>
+    <li>Expenses</li>
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: accounts.EXPENSES }"></ng-container>
+    </ul>
+    <li>Income</li>
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: accounts.INCOME }"></ng-container>
+    </ul>
+    <li>Liabilities</li>
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: accounts.LIABILITIES }"></ng-container>
+    </ul>
+
+</ul>
+
+
+<ng-template #recursiveList let-list>
+    <li *ngFor="let item of list">
+        <div class="row text-right border">
+            <div class="col-sm border">
+                {{item.accountName}}
+            </div>
+            <div class="col-sm text-right border">
+                {{item.balance|currency:'GBP'}}
+            </div>
+        </div>
+      
+      <ul *ngIf="item.children.length > 0">
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.children }"></ng-container>
+      </ul>
+    </li>
+  </ng-template>
+</div>
