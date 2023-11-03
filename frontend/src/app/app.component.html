@@ -1,0 +1,32 @@
+
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <a class="navbar-brand" routerLink="">Ledger-o-Matic</a>
+    
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+      &#9776;
+    </button>
+
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="nav-item " routerLinkActive="active">
+          <a routerLink="accounts" class="nav-link">Accounts</a>
+        </li>
+        <li class="nav-item " routerLinkActive="active">
+          <a routerLink="transactions" class="nav-link">Transactions</a>
+        </li>
+        <li class="nav-item " routerLinkActive="active">
+          <a routerLink="balances" class="nav-link">Balances</a>
+        </li>
+        <li class="nav-item " routerLinkActive="active">
+          <a routerLink="reports" class="nav-link">Reports</a>
+        </li>
+        <li class="nav-item " routerLinkActive="active">
+          <a routerLink="admin" class="nav-link">Admin</a>
+        </li>
+        <!--app-auth-button></app-auth-button-->
+      </ul>
+      </div>
+  </nav>
+  <router-outlet></router-outlet>
+</div>
