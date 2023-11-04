@@ -15,9 +15,9 @@ data class Account(var name: String,
                    var accountType: AccountType,
                    @ManyToOne(fetch=FetchType.EAGER)
                    @JoinColumn(name = "parentId")
-                   var parentAccount: Account?,
+                   var parentAccount: Account? = null,
 
-                   var placeholder: Boolean,
+                   var placeholder: Boolean = false,
                    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?=null) {
 
 }

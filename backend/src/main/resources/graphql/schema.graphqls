@@ -1,3 +1,5 @@
+scalar Date
+
 type Account {
     id: ID!,
     accountType: AccountType,
@@ -6,10 +8,21 @@ type Account {
     children: [Account]
 }
 
+type Transaction {
+    id: ID!,
+    date: Date,
+    description: String,
+    amount: Int,
+    debitAccount: Account,
+    creditAccount: Account
+}
+
 type Query {
     accounts:[Account]
     account(id: ID):Account
     topLevelAccounts(accountType: AccountType):[Account]
+
+    transactions:[Transaction]
 }
 
 enum AccountType {
