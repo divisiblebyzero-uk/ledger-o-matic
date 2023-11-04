@@ -1,0 +1,21 @@
+type Account {
+    id: ID!,
+    accountType: AccountType,
+    name: String,
+    parentAccount: Account,
+    children: [Account]
+}
+
+type Query {
+    accounts:[Account]
+    account(id: ID):Account
+    topLevelAccounts(accountType: AccountType):[Account]
+}
+
+enum AccountType {
+    ASSET
+    EQUITY
+    EXPENSE
+    INCOME
+    LIABILITY
+}
