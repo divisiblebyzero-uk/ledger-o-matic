@@ -26,6 +26,8 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         accountRepository.save(Account("Clothes", AccountType.EXPENSE, luxuries))
         accountRepository.save(Account("Dining Out", AccountType.EXPENSE, luxuries))
 
+        accountRepository.save(Account("Interest", AccountType.EXPENSE))
+
         accountRepository.save(Account("Salary", AccountType.INCOME))
 
         accountRepository.save(Account("Credit Card", AccountType.LIABILITY))
@@ -37,9 +39,9 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         accountService.accountHierarchy()
     }
 
-    fun addTransaction(description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {
+    fun addTransaction(dayOfMonth: Int, description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {
         transactionRepository.save(Transaction(
-            transactionDate = LocalDate.now(),
+            transactionDate = LocalDate.now().withDayOfMonth(dayOfMonth),
             description = description,
             amount = amount,
             debitAccount = accountRepository.findOneByName(debitAccount),
@@ -50,8 +52,17 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         logger.info("Saving dummy data")
         createAccounts()
 
-        addTransaction("Opening balance", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Opening Balances")
-        addTransaction("Salary", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Salary")
-        addTransaction("Dinner at restaurant", BigDecimal(100), debitAccount = "Dining Out", creditAccount = "Bank Account (Current)")
+        addTransaction(1, "Opening balance", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Opening Balances")
+        addTransaction(1, "Opening balance", BigDecimal(250000), debitAccount = "Opening Balances", creditAccount = "Mortgage")
+
+        addTransaction(2, "Salary", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Salary")
+        addTransaction(3, "Dinner at restaurant", BigDecimal(100), debitAccount = "Dining Out", creditAccount = "Bank Account (Current)")
+
+        addTransaction(15, "Mortgage interest", BigDecimal(250), debitAccount = "Interest", creditAccount = "Mortgage")
+        addTransaction(16, "Mortgage payment", BigDecimal(400), debitAccount = "Mortgage", creditAccount = "Bank Account (Current)")
+
+        transactionRepository.findAll().forEach {
+            logger.info("Transaction record: $it")
+        }
     }
 }

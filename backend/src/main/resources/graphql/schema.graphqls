@@ -5,12 +5,13 @@ type Account {
     accountType: AccountType,
     name: String,
     parentAccount: Account,
-    children: [Account]
+    children: [Account],
+    currentBalance: Float
 }
 
 type Transaction {
     id: ID!,
-    date: Date,
+    transactionDate: Date,
     description: String,
     amount: Int,
     debitAccount: Account,

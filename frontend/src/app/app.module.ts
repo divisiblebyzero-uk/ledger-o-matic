@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { WelcomeScreenComponent } from './misc/welcome-screen/welcome-screen.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AccountsSummaryComponent } from './accounts/accounts-summary/accounts-summary.component';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { AccountsSummaryComponent } from './accounts/accounts-summary/accounts-s
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    GraphQLModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

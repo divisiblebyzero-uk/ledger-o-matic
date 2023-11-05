@@ -1,9 +1,11 @@
 package uk.divisiblebyzero.ledger.service
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import uk.divisiblebyzero.ledger.model.Account
 import uk.divisiblebyzero.ledger.model.AccountType
 import uk.divisiblebyzero.ledger.model.Transaction
+import java.math.BigDecimal
 
 
 interface AccountRepository:JpaRepository<Account, Long> {
@@ -15,5 +17,8 @@ interface AccountRepository:JpaRepository<Account, Long> {
 }
 
 interface TransactionRepository:JpaRepository<Transaction, Long> {
-
+    @Query("select coalesce(sum(amount), 0) from Transaction where creditAccount = ?1")
+    abstract fun sumCreditTransactionsByAccount(account:Account):BigDecimal
+    @Query("select coalesce(sum(amount), 0) from Transaction where debitAccount = ?1")
+    abstract fun sumDebitTransactionsByAccount(account:Account):BigDecimal
 }
