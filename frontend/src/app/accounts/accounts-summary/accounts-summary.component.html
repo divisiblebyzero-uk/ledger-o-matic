@@ -1,9 +1,45 @@
-<div class="container">
+
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="error">Error!</div>
+<div *ngIf="accountTree">
+    <div class="container-fluid">
+        <ng-container *ngFor="let accountType of accountTypes">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3>{{accountType}}</h3>
+                </div>
+            </div>
+            <div class="row" *ngFor="let account of accountTree[accountType]">
+                <div class="col-sm">
+                    {{account.id}}
+                </div>
+                <div class="col-sm">
+                    {{account.name}}
+                </div>
+                <div class="col-sm text-end">
+                    {{account.currentBalance|currency:'GBP'}}
+                </div>
+                <div class="col-sm">
+                    {{account.accountType}}
+                </div>
+                <div class="col-sm">
+                    {{account.children}}
+                </div>
+                <div class="col-sm">
+                    {{account.parentAccount}}
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+
+<div class="container" *ngIf="false">
 
     <div class="row">
         <div class="col-sm-2">Assets</div>
     </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accounts.ASSETS, indentLevel: 1} }"></ng-container>
+    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accountTree['ASSETS'], indentLevel: 1} }"></ng-container>
     <div class="row">
         <div class="col-sm-2">Equity</div>
     </div>
@@ -19,7 +55,7 @@
     <div class="row">
         <div class="col-sm-2">Liabilities</div>
     </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accounts.LIABILITIES, indentLevel: 1} }"></ng-container>
+    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accountTree['LIABILITIES'], indentLevel: 1} }"></ng-container>
 
 
 
@@ -29,7 +65,7 @@
         <div class="row">
                 <div class="col-sm border" [class]="'mx-' + params.indentLevel*2">
                     
-                    {{item.accountName}} {{params.indentLevel}}
+                    {{item.name}} {{params.indentLevel}}
                 </div>
                 <div class="col-sm text-right border">
                     {{item.balance|currency:'GBP'}}

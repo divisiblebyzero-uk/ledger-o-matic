@@ -24,6 +24,7 @@ type Query {
     topLevelAccounts(accountType: AccountType):[Account]
 
     transactions:[Transaction]
+
 }
 
 enum AccountType {

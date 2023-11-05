@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
@@ -15,6 +18,18 @@ import java.time.format.DateTimeParseException
 class GraphQLConfiguration {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+
+    @Bean
+    fun corsFilter(): CorsFilter {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin("http://localhost:4200")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/graphql/**", config)
+        return CorsFilter(source)
+    }
 
     @Bean
     fun runtimeWiringConfigurer(): RuntimeWiringConfigurer {

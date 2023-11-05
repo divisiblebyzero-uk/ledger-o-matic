@@ -1,32 +1,71 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Apollo, gql} from 'apollo-angular';
+
+export interface Account {
+  id: string,
+  name: string,
+  currentBalance: number,
+  accountType: string,
+  parentAccount: string|null,
+  children: string[]
+}
+
+export interface TopLevelAccounts {
+  [accountType: string]: Account[]
+}
 
 @Component({
   selector: 'app-accounts-summary',
   templateUrl: './accounts-summary.component.html',
   styleUrls: ['./accounts-summary.component.scss']
 })
-export class AccountsSummaryComponent {
+export class AccountsSummaryComponent implements OnInit {
 
-  public accounts = {
-    ASSETS: [ { accountId: 1, accountName: 'Current Assets ', accountType: 'Asset', children: [
-      { accountId: 2, accountName: 'Current Bank Account', balance: 1000.0, accountType: 'Asset', children: []},
-      { accountId: 3, accountName: 'Savings Bank Account', balance: 53000, accountType: 'Asset', children: []},
-    ], expanded: false }],
-    EQUITY: [ { accountId: 4, accountName: 'Opening Balances', accountType: 'Equity', children: []}],
-    EXPENSES: [
-      { accountId: 5, accountName: 'Hobbies', accountType: 'Expense', children: [
-        { accountId: 7, accountName: 'Flying', accountType: 'Expense', children: []},
-        { accountId: 8, accountName: 'Eating out', accountType: 'Expense', children: []},
-      ] },
-      { accountId: 6, accountName: 'Household', accountType: 'Expense', children: [
-        { accountId: 9, accountName: 'Groceries', accountType: 'Expense', children: []},
-        { accountId:10, accountName: 'Utilities', accountType: 'Expense', children: []},
-
-      ] },
-      ],
+  public accounts: {ASSETS: Account[], EQUITY: Account[], EXPENSES: Account[], INCOME: Account[], LIABILITIES: Account[] } = {
+    ASSETS: [],
+    EQUITY: [],
+    EXPENSES: [],
     INCOME: [],
     LIABILITIES: []
-   };
+  };
+
+  public accountTypes: string[] = ["ASSET", "EQUITY", "EXPENSE", "INCOME", "LIABILITY"];
+
+  public accountTree: TopLevelAccounts = {};
+
+  loading = true;
+  error: any;
+  graphaccounts: Account[] = [];
+
+
+  constructor(private apollo: Apollo) {
+
+  }
+
+  watchAccountType(accountType: string): void {
+    this.apollo.watchQuery( {
+      query: gql`{ topLevelAccounts(accountType:${accountType}) { 
+        id
+        name
+        currentBalance
+        accountType,
+        parentAccount { id },
+        children { id }
+      }}`,
+    })
+    .valueChanges.subscribe((result: any) => {
+      console.log(result.data);
+      this.accountTree[accountType] = result.data?.topLevelAccounts as Account[];
+      this.loading = result.loading;
+      this.error = result.error;
+    })
+  }
+
+  ngOnInit() {
+    this.accountTypes.forEach( accountType => {
+      this.watchAccountType(accountType);
+    })
+  }
 
 
 }

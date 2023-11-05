@@ -36,11 +36,19 @@ public class AccountGraphQLController(val accountRepository: AccountRepository, 
     }
 
     @SchemaMapping
-    fun currentBalance(parentAccount: Account): BigDecimal {
-        val credits = transactionRepository.sumCreditTransactionsByAccount(parentAccount)
-        val debits = transactionRepository.sumDebitTransactionsByAccount(parentAccount)
+    fun currentBalance(account: Account): BigDecimal {
+        val credits = transactionRepository.sumCreditTransactionsByAccount(account)
+        val debits = transactionRepository.sumDebitTransactionsByAccount(account)
 
-        return credits.times(BigDecimal(parentAccount.accountType.creditDirection))
-            .plus(debits.times(BigDecimal(parentAccount.accountType.debitDirection)));
+        // @TODO - this assumes all accounts under this one in the tree have the same type...
+        var childBalance = BigDecimal.ZERO;
+        val children = accountRepository.findByParentAccount(account);
+        children?.forEach {
+            childBalance = childBalance.plus(currentBalance(it))
+        }
+
+        return credits.times(BigDecimal(account.accountType.creditDirection))
+            .plus(debits.times(BigDecimal(account.accountType.debitDirection)))
+            .plus(childBalance);
     }
 }
