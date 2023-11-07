@@ -21,4 +21,7 @@ interface TransactionRepository:JpaRepository<Transaction, Long> {
     abstract fun sumCreditTransactionsByAccount(account:Account):BigDecimal
     @Query("select coalesce(sum(amount), 0) from Transaction where debitAccount = ?1")
     abstract fun sumDebitTransactionsByAccount(account:Account):BigDecimal
+
+    @Query("select t from Transaction t where creditAccount = ?1 or debitAccount = ?1")
+    abstract fun transactionsForAccount(account:Account):List<Transaction>
 }

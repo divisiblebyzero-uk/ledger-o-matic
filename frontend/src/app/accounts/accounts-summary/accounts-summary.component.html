@@ -1,8 +1,13 @@
+<div class="container-fluid">
 
-<div *ngIf="loading">Loading...</div>
-<div *ngIf="error">Error!</div>
-<div *ngIf="accountTree">
-    <div class="container-fluid">
+    <div class="jumbotron">
+        <h1 class="display-4">Accounts</h1>
+        <hr class="my-4">
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="error">Error!</div>
+    <div *ngIf="accountTree">
         <ng-container *ngFor="let accountType of accountTypes">
             <div class="row">
                 <div class="col-sm-6">
@@ -17,7 +22,7 @@
                     {{account.name}}
                 </div>
                 <div class="col-sm text-end">
-                    {{account.currentBalance|currency:'GBP'}}
+                    <a  (click)="showLedger(account)">{{account.currentBalance|currency:'GBP'}}</a>
                 </div>
                 <div class="col-sm">
                     {{account.accountType}}
@@ -31,47 +36,5 @@
             </div>
         </ng-container>
     </div>
-</div>
 
-
-<div class="container" *ngIf="false">
-
-    <div class="row">
-        <div class="col-sm-2">Assets</div>
-    </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accountTree['ASSETS'], indentLevel: 1} }"></ng-container>
-    <div class="row">
-        <div class="col-sm-2">Equity</div>
-    </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accounts.EQUITY, indentLevel: 1} }"></ng-container>
-    <div class="row">
-        <div class="col-sm-2">Expenses</div>
-    </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accounts.EXPENSES, indentLevel: 1} }"></ng-container>
-    <div class="row">
-        <div class="col-sm-2">Income</div>
-    </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accounts.INCOME, indentLevel: 1} }"></ng-container>
-    <div class="row">
-        <div class="col-sm-2">Liabilities</div>
-    </div>
-    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: accountTree['LIABILITIES'], indentLevel: 1} }"></ng-container>
-
-
-
-
-<ng-template #recursiveList let-params>
-    <ng-container *ngFor="let item of params.list">
-        <div class="row">
-                <div class="col-sm border" [class]="'mx-' + params.indentLevel*2">
-                    
-                    {{item.name}} {{params.indentLevel}}
-                </div>
-                <div class="col-sm text-right border">
-                    {{item.balance|currency:'GBP'}}
-                </div>
-        </div>
-        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: {list: item.children, indentLevel: params.indentLevel+1 }}"></ng-container>
-    </ng-container>
-  </ng-template>
 </div>

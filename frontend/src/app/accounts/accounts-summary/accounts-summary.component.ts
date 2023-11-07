@@ -1,18 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Apollo, gql} from 'apollo-angular';
+import { Account, TopLevelAccounts } from 'src/app/model/entities';
 
-export interface Account {
-  id: string,
-  name: string,
-  currentBalance: number,
-  accountType: string,
-  parentAccount: string|null,
-  children: string[]
-}
-
-export interface TopLevelAccounts {
-  [accountType: string]: Account[]
-}
 
 @Component({
   selector: 'app-accounts-summary',
@@ -21,24 +11,15 @@ export interface TopLevelAccounts {
 })
 export class AccountsSummaryComponent implements OnInit {
 
-  public accounts: {ASSETS: Account[], EQUITY: Account[], EXPENSES: Account[], INCOME: Account[], LIABILITIES: Account[] } = {
-    ASSETS: [],
-    EQUITY: [],
-    EXPENSES: [],
-    INCOME: [],
-    LIABILITIES: []
-  };
-
   public accountTypes: string[] = ["ASSET", "EQUITY", "EXPENSE", "INCOME", "LIABILITY"];
 
   public accountTree: TopLevelAccounts = {};
 
   loading = true;
   error: any;
-  graphaccounts: Account[] = [];
 
 
-  constructor(private apollo: Apollo) {
+  constructor(private apollo: Apollo, private router: Router) {
 
   }
 
@@ -65,6 +46,10 @@ export class AccountsSummaryComponent implements OnInit {
     this.accountTypes.forEach( accountType => {
       this.watchAccountType(accountType);
     })
+  }
+
+  showLedger(account: Account) {
+    this.router.navigate(['/account-ledger', account.id])
   }
 
 
