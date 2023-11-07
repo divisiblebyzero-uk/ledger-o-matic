@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo, gql} from 'apollo-angular';
 import { Account, TopLevelAccounts } from 'src/app/model/entities';
-
+import { TreeNode } from 'primeng/api';
+import { NodeService } from 'src/app/service/nodeservice';
 
 @Component({
   selector: 'app-accounts-summary',
@@ -18,8 +19,9 @@ export class AccountsSummaryComponent implements OnInit {
   loading = true;
   error: any;
 
+  treeData !: TreeNode[];
 
-  constructor(private apollo: Apollo, private router: Router) {
+  constructor(private apollo: Apollo, private router: Router, private nodeService: NodeService) {
 
   }
 
@@ -43,14 +45,35 @@ export class AccountsSummaryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.accountTypes.forEach( accountType => {
+    this.nodeService.getAccounts().then((data) => (this.treeData = data));
+    /*this.accountTypes.forEach( accountType => {
       this.watchAccountType(accountType);
-    })
+    })*/
   }
 
-  showLedger(account: Account) {
-    this.router.navigate(['/account-ledger', account.id])
+  showLedger(accountId: string) {
+    this.router.navigate(['/account-ledger', accountId])
   }
 
+  expandAll() {
+    this.treeData.forEach((node) => {
+        this.expandRecursive(node, true);
+    });
+}
+
+collapseAll() {
+    this.treeData.forEach((node) => {
+        this.expandRecursive(node, false);
+    });
+}
+
+private expandRecursive(node: TreeNode, isExpand: boolean) {
+    node.expanded = isExpand;
+    if (node.children) {
+        node.children.forEach((childNode) => {
+            this.expandRecursive(childNode, isExpand);
+        });
+    }
+}
 
 }

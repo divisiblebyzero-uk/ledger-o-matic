@@ -12,6 +12,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AccountLedgerComponent } from './accounts/account-ledger/account-ledger.component';
 import { StyleDirective } from './style.directive';
 import { TableModule } from 'primeng/table';
+import { TreeModule } from 'primeng/tree';
+import { NodeService } from './service/nodeservice';
 
 @NgModule({
   declarations: [
@@ -28,9 +30,10 @@ import { TableModule } from 'primeng/table';
     NgbModule,
     GraphQLModule,
     HttpClientModule,
-    TableModule
+    TableModule,
+    TreeModule
   ],
-  providers: [],
+  providers: [NodeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
