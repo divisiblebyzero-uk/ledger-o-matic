@@ -18,9 +18,8 @@ export class NodeService {
             const topLevel: TreeNode = {
                 key: accountType,
                 label: accountType,
-                data: accountType,
-                children: [],
-                expanded: true
+                data: { id: accountType, name: accountType, currentBalance: null},
+                children: []
             };
             accountsTree.push(topLevel);
             this.apollo.watchQuery( {
@@ -34,8 +33,8 @@ export class NodeService {
                 }}`,
               })
               .valueChanges.subscribe((result: any) => {
-                console.log(result.data);
                 this.addAccounts(result.data?.topLevelAccounts as Account[], topLevel);
+                
               })
               
             });
@@ -44,15 +43,40 @@ export class NodeService {
       }
 
 
+      downloadChildren(parentNode: TreeNode, accountId: number) {
+
+        this.apollo.watchQuery( {
+            query: gql`{ account(id:${accountId}) { 
+              id
+              name
+              currentBalance
+              accountType,
+              parentAccount { id },
+              children { id }
+            }}`,
+          })
+          .valueChanges.subscribe((result: any) => {
+            this.addAccounts([result.data?.account as Account], parentNode);
+            
+          })
+          
+        }
+  
+
       addAccounts(accounts: Account[], parent: TreeNode) {
         accounts.forEach(account => {
-            console.log("Adding account: " + account.name)
             const accountNode: TreeNode = {
                 key: account.id + "",
                 label: account.name,
                 data: account,
                 children: [],
                 type: "account"
+            }
+            if (account.children.length > 0) {
+                account.children.forEach(child => {
+                    child.id;
+                    this.downloadChildren(accountNode, child.id);
+                });
             }
             parent.children?.push(accountNode);
         })

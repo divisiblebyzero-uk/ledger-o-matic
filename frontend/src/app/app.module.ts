@@ -13,6 +13,7 @@ import { AccountLedgerComponent } from './accounts/account-ledger/account-ledger
 import { StyleDirective } from './style.directive';
 import { TableModule } from 'primeng/table';
 import { TreeModule } from 'primeng/tree';
+import { TreeTableModule } from 'primeng/treetable';
 import { NodeService } from './service/nodeservice';
 
 @NgModule({
@@ -31,7 +32,8 @@ import { NodeService } from './service/nodeservice';
     GraphQLModule,
     HttpClientModule,
     TableModule,
-    TreeModule
+    TreeModule,
+    TreeTableModule
   ],
   providers: [NodeService],
   bootstrap: [AppComponent]

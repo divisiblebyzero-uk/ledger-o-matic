@@ -4,7 +4,7 @@ export interface Account {
     currentBalance: number,
     accountType: string,
     parentAccount: string|null,
-    children: string[]
+    children: { id: number }[]
   }
   
 export interface TopLevelAccounts {

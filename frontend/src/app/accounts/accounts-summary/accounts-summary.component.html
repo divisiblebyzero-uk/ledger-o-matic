@@ -5,34 +5,32 @@
         <hr class="my-4">
     </div>
 
-    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!accountTree">Loading...</div>
     <div *ngIf="error">Error!</div>
     <div *ngIf="accountTree">
 
         <div class="row">
-            <div class="card flex flex-column align-items-center justify-content-center">
-                <div class="mb-3">
-                    <button pButton type="button" label="Expand all" (click)="expandAll()" class="mr-2"></button>
-                    <button pButton type="button" label="Collapse all" (click)="collapseAll()"></button>
-                </div>
-                <p-tree [value]="treeData" class="w-100 md:w-30rem">
-                    <ng-template let-node pTemplate="account">
-                        <span class="float-left">
-                            {{ node.data.name }}
-                        </span>
-                        <span class="float-right">
-                            <a  (click)="showLedger(node.data.id)">{{node.data.currentBalance|currency:'GBP'}}</a>
-                        </span>
+            <div class="card">
+                <p-treeTable [value]="treeData" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Current Balance</th>
+                            <th>Type</th>
+                        </tr>
                     </ng-template>
-                    <ng-template let-node pTemplate="default">
-                        <b>{{ node.label }}</b>
-                    </ng-template> 
-                </p-tree>
+                    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                        <tr [ttRow]="rowNode">
+                            <td>
+                                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData.name }}
+                            </td>
+                            <td><a (click)="showLedger(rowData.id)">{{ rowData.currentBalance|currency:'GBP' }}</a></td>
+                            <td>{{ rowData.accountType }}</td>
+                        </tr>
+                    </ng-template>
+                </p-treeTable>
             </div>
-            </div>
-
-
-
+        </div>
     </div>
-
 </div>
