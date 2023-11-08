@@ -1,0 +1,61 @@
+<div class="container-fluid">
+
+    <div class="jumbotron">
+        <h1 class="display-4">Journal</h1>
+        <hr class="my-4">
+    </div>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="error">Error!</div>
+    <div *ngIf="transactions">
+        <div class="card">
+            <p-table 
+                #dt1
+                [value]="transactions" 
+                [tableStyle]="{ 'min-width': '50rem' }"
+                [rows]="25"
+                [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[25, 100, 1000]"
+
+                dataKey="id"
+                [loading]="loading"
+                [paginator]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [globalFilterFields]="['id', 'description', 'transactionDate', 'amount', 'debitAccount.name', 'creditAccount.name']"
+                >
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                        <span class="p-input-icon-left ml-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="globalFilterUpdate($event)" input="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Id<p-columnFilter type="numeric" field="id" display="menu"></p-columnFilter></th>
+                        <th>Transaction Date<p-columnFilter type="date" field="transactionDate" display="menu"></p-columnFilter></th><!-- TODO - sort out the date search -->
+                        <th>Description<p-columnFilter type="text" field="description" display="menu"></p-columnFilter></th>
+                        <th style="text-align: right">Amount<p-columnFilter type="numeric" field="amount" display="menu"></p-columnFilter></th>
+                        <th>Debit Account<p-columnFilter type="text" field="debitAccount.name" display="menu"></p-columnFilter></th>
+                        <th>Credit Account<p-columnFilter type="text" field="creditAccount.name" display="menu"></p-columnFilter></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-transaction>
+                    <tr>
+                        <td>{{ transaction.id }}</td>
+                        <td>{{ transaction.transactionDate }}</td>
+                        <td>{{ transaction.description }}</td>
+                        <td style="text-align: right">{{ transaction.amount|currency:'GBP' }}</td>
+                        <td>{{ transaction.debitAccount.name }}</td>
+                        <td>{{ transaction.creditAccount.name }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+

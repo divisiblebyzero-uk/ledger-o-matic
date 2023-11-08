@@ -15,6 +15,10 @@ import { TableModule } from 'primeng/table';
 import { TreeModule } from 'primeng/tree';
 import { TreeTableModule } from 'primeng/treetable';
 import { NodeService } from './service/nodeservice';
+import { JournalComponent } from './journal/journal/journal.component';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -22,9 +26,13 @@ import { NodeService } from './service/nodeservice';
     WelcomeScreenComponent,
     AccountsSummaryComponent,
     AccountLedgerComponent,
-    StyleDirective
+    StyleDirective,
+    JournalComponent
   ],
   imports: [
+    InputTextModule,
+    ButtonModule,
+    FormsModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

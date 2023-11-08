@@ -24,6 +24,7 @@
     "apollo-angular": "^5.0.2",
     "bootstrap": "^5.2.3",
     "graphql": "^16",
+    "primeicons": "^6.0.1",
     "primeng": "^16.7.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
