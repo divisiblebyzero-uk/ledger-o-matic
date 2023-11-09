@@ -17,6 +17,16 @@ type Transaction {
     debitAccount: Account,
     creditAccount: Account
 }
+type AccountLedger {
+    ledgerAccount: Account,
+    transaction: Transaction,
+    ledgerDate: Date,
+    description: String,
+    debitAmount: Float,
+    creditAmount: Float,
+    transferAccount: Account,
+    runningTotal: Float
+}
 
 type Query {
     accounts:[Account]
@@ -25,6 +35,8 @@ type Query {
 
     transactions:[Transaction]
     transactionsForAccount(accountId: ID):[Transaction]
+
+    accountLedger(accountId: ID, fromDate: Date, toDate: Date):[AccountLedger]
 }
 
 enum AccountType {

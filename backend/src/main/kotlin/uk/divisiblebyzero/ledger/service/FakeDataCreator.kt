@@ -64,5 +64,9 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         transactionRepository.findAll().forEach {
             logger.info("Transaction record: $it")
         }
+
+        transactionRepository.accountLedgerBetweenDates(accountRepository.findOneByName("Bank Account (Current)"), LocalDate.now().withDayOfMonth(1), LocalDate.now().withDayOfMonth(15)).forEach {
+            logger.info("$it")
+        }
     }
 }

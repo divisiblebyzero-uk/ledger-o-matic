@@ -11,7 +11,7 @@ enum class AccountType(val id: String, val debitDirection: Int, val creditDirect
     LIABILITY("liability", -1, 1),
 }
 @Entity
-data class Account(var name: String,
+class Account(var name: String,
                    var accountType: AccountType,
                    @ManyToOne(fetch=FetchType.EAGER)
                    @JoinColumn(name = "parentId")
@@ -19,5 +19,7 @@ data class Account(var name: String,
 
                    var placeholder: Boolean = false,
                    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?=null) {
-
+    override fun toString(): String {
+        return "Account(name='$name', accountType=$accountType, parentAccount=$parentAccount, placeholder=$placeholder, id=$id)"
+    }
 }
