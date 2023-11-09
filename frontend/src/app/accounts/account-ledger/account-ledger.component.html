@@ -7,25 +7,27 @@
 
     <div *ngIf="loading">Loading...</div>
     <div *ngIf="error">Error!</div>
-    <div *ngIf="transactions">
+    <div *ngIf="accountLedgers">
         <div class="card">
-            <p-table [value]="transactions" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [value]="accountLedgers" [tableStyle]="{ 'min-width': '50rem' }">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Transaction Date</th>
                         <th>Description</th>
-                        <th style="text-align: right">Amount</th>
+                        <th style="text-align: right">DR</th>
+                        <th style="text-align: right">CR</th>
                         <th>Transfer Account</th>
                         <th style="text-align: right">Balance</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-transaction>
+                <ng-template pTemplate="body" let-accountLedger>
                     <tr>
-                        <td>{{ transaction.transactionDate }}</td>
-                        <td>{{ transaction.description }}</td>
-                        <td style="text-align: right">{{ transaction.amount|currency:'GBP' }}</td>
-                        <td>{{ transaction.transferAccount.name }}</td>
-                        <td style="text-align: right">{{ 0 }}</td>
+                        <td>{{ accountLedger.ledgerDate }}</td>
+                        <td>{{ accountLedger.description }}</td>
+                        <td style="text-align: right">{{ accountLedger.debitAmount|currency:'GBP' }}</td>
+                        <td style="text-align: right">{{ accountLedger.creditAmount|currency:'GBP' }}</td>
+                        <td><a (click)="showLedger(accountLedger.transferAccount.id)">{{ accountLedger.transferAccount.name }}</a></td>
+                        <td style="text-align: right">{{ accountLedger.runningTotal|currency:'GBP' }}</td>
                     </tr>
                 </ng-template>
             </p-table>

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Apollo, gql } from 'apollo-angular';
-import { Account, TopLevelAccounts } from 'src/app/model/entities';
+import { TopLevelAccounts } from 'src/app/model/entities';
 import { TreeNode } from 'primeng/api';
-import { NodeService } from 'src/app/service/nodeservice';
+import { AccountTreeDataService } from 'src/app/service/account-tree-data-service';
 
 @Component({
   selector: 'app-accounts-summary',
@@ -19,7 +18,7 @@ export class AccountsSummaryComponent implements OnInit {
 
   treeData !: TreeNode[];
 
-  constructor(private router: Router, private nodeService: NodeService) {
+  constructor(private router: Router, private nodeService: AccountTreeDataService) {
   }
 
   ngOnInit() {

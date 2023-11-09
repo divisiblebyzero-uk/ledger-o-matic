@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql} from 'apollo-angular';
-import { Account, Transaction } from 'src/app/model/entities';
+import { Account, AccountLedger, Transaction } from 'src/app/model/entities';
+import { AccountLedgerDataService } from 'src/app/service/account-ledger-data-service';
 
 @Component({
   selector: 'app-account-ledger',
@@ -16,57 +17,25 @@ export class AccountLedgerComponent implements OnInit {
   public error: any;
   public accountName: string = "";
 
-  public transactions!: Transaction[];
+  public accountLedgers!: AccountLedger[];
+
+  public fromDate!: Date;
+  public toDate!: Date;
 
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {
 
+  constructor(private apollo: Apollo, private route: ActivatedRoute, private dataService: AccountLedgerDataService, private router: Router) {
+    this.fromDate = new Date();
+    this.fromDate.setDate(1);
+    this.toDate = new Date();
   }
 
   ngOnInit(): void {
     this.loadData();
   }
 
-  wrangleTransactions(transactions: Transaction[]): Transaction[] {
-    var debitDirection:number = -1;
-    var creditDirection:number = 1;
-    if (this.account?.accountType == "ASSET" || this.account?.accountType == "EXPENSE") {
-      debitDirection = 1;
-      creditDirection = -1;
-    }
-    const returnValue: Transaction[] = [];
-    transactions.forEach(t => {
-      const t2 = structuredClone(t);
-      if (t2.creditAccount.id == this.accountId) {
-        t2.amount = t2.amount * creditDirection;
-        t2.transferAccount = t2.debitAccount
-      } else {
-        t2.amount = t2.amount * debitDirection;
-        t2.transferAccount = t2.creditAccount
-      }
-      returnValue.push(t2);
-    })
-    return returnValue;
-  }
-
-
   watchTransactions(accountId: number): void {
-    this.apollo.watchQuery( {
-      query: gql`{ transactionsForAccount(accountId:${accountId}) { 
-        id
-        transactionDate
-        description
-        amount
-        debitAccount{id, name}
-        creditAccount{id, name}
-      }}`,
-    })
-    .valueChanges.subscribe((result: any) => {
-      console.log(result.data);
-      this.transactions = this.wrangleTransactions(result.data?.transactionsForAccount as Transaction[]);
-      this.loading = result.loading;
-      this.error = result.error;
-    })
+    this.dataService.downloadAccountLedger(accountId, this.fromDate, this.toDate).subscribe(x => this.accountLedgers = x);
   }
 
   watchAccount(accountId: number): void {
@@ -90,8 +59,11 @@ export class AccountLedgerComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.accountId = params['accountId'];
       this.watchAccount(this.accountId);
-      
     })
+  }
+  
+  showLedger(accountId: string) {
+    this.router.navigate(['/account-ledger', accountId])
   }
 
 }

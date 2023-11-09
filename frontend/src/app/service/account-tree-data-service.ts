@@ -4,7 +4,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Account } from '../model/entities';
     
 @Injectable()
-export class NodeService {
+export class AccountTreeDataService {
 
     accountTypes: string[] = ["ASSET", "EQUITY", "EXPENSE", "INCOME", "LIABILITY"];
 

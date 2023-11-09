@@ -22,4 +22,13 @@ export interface Transaction {
     balance?: number
 
 }
-  
+
+export interface AccountLedger {
+    ledgerAccount: {id: number, name: string},
+    description: string,
+    ledgerDate: Date,
+    debitAmount: number,
+    creditAmount: number,
+    transferAccount: {id: number, name: string},
+    runningTotal: number
+}

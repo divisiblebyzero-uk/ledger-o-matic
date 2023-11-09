@@ -14,11 +14,12 @@ import { StyleDirective } from './style.directive';
 import { TableModule } from 'primeng/table';
 import { TreeModule } from 'primeng/tree';
 import { TreeTableModule } from 'primeng/treetable';
-import { NodeService } from './service/nodeservice';
+import { AccountTreeDataService } from './service/account-tree-data-service';
 import { JournalComponent } from './journal/journal/journal.component';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { AccountLedgerDataService } from './service/account-ledger-data-service';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { InputTextModule } from 'primeng/inputtext';
     TreeModule,
     TreeTableModule
   ],
-  providers: [NodeService],
+  providers: [AccountTreeDataService, AccountLedgerDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
