@@ -13,6 +13,8 @@ export class AccountLedgerComponent implements OnInit {
 
   public accountId: number = -1;
   public account: Account|null = null;
+  public accountLoading = true;
+  public accountError: any;
   public loading = true;
   public error: any;
   public accountName: string = "";
@@ -34,31 +36,26 @@ export class AccountLedgerComponent implements OnInit {
     this.loadData();
   }
 
-  watchTransactions(accountId: number): void {
-    this.dataService.downloadAccountLedger(accountId, this.fromDate, this.toDate).subscribe(x => this.accountLedgers = x);
+  getTransactions(accountId: number): void {
+    this.dataService.downloadAccountLedger(accountId, this.fromDate, this.toDate).subscribe(x => {
+      this.accountLedgers = x.accountLedgers;
+      this.error = x.error;
+      this.loading = x.loading;
+    });
   }
 
-  watchAccount(accountId: number): void {
-    this.apollo.watchQuery( {
-      query: gql`{ account(id:${accountId}) { 
-        id
-        name
-        accountType
-      }}`,
-    })
-    .valueChanges.subscribe((result: any) => {
-      console.log(result.data);
-      this.account = result.data?.account as Account;
-      this.loading = result.loading;
-      this.error = result.error;
-      this.watchTransactions(this.accountId);
+  getAccount(accountId: number):void {
+    this.dataService.downloadAccount(accountId).subscribe( result => {
+      this.account = result.account;
+      this.accountError = result.error;
+      this.accountLoading = result.loading;
     })
   }
-
   public loadData():void {
     this.route.params.subscribe(params => {
       this.accountId = params['accountId'];
-      this.watchAccount(this.accountId);
+      this.getAccount(this.accountId);
+      this.getTransactions(this.accountId);
     })
   }
   

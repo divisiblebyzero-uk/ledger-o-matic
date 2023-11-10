@@ -5,8 +5,8 @@
         <hr class="my-4">
     </div>
 
-    <div *ngIf="loading">Loading...</div>
-    <div *ngIf="error">Error!</div>
+    <div *ngIf="loading||accountLoading">Loading...</div>
+    <div *ngIf="error||accountError">Error!</div>
     <div *ngIf="accountLedgers">
         <div class="card">
             <p-table [value]="accountLedgers" [tableStyle]="{ 'min-width': '50rem' }">
