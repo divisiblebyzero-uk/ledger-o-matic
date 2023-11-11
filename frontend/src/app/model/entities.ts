@@ -16,9 +16,9 @@ export interface Transaction {
     transactionDate: Date,
     description: string,
     amount: number,
-    debitAccount: {id: number, name: string},
-    creditAccount: {id: number, name: string},
-    transferAccount?: {id: number, name: string},
+    debitAccount: {id: number, name: string, accountType: string},
+    creditAccount: {id: number, name: string, accountType: string},
+    transferAccount?: {id: number, name: string, accountType: string},
     balance?: number
 
 }

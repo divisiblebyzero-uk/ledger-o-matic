@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
 import { Account, Transaction } from 'src/app/model/entities';
 import { Table } from 'primeng/table';
+import { TransactionsDataService } from 'src/app/service/transactions-data.service';
 
 @Component({
   selector: 'app-journal',
@@ -20,7 +20,7 @@ export class JournalComponent implements OnInit {
 
   @ViewChild('dt1') dt1!:Table;
 
-  constructor(private apollo: Apollo) {
+  constructor(private transactionsDataService: TransactionsDataService) {
   }
 
   ngOnInit(): void {
@@ -37,19 +37,10 @@ export class JournalComponent implements OnInit {
   }
 
   watchTransactions(): void {
-    this.apollo.watchQuery( {
-      query: gql`{ transactions { 
-        id
-        transactionDate
-        description
-        amount
-        debitAccount{id, name, accountType}
-        creditAccount{id, name, accountType}
-      }}`,
-    })
-    .valueChanges.subscribe((result: any) => {
+    this.transactionsDataService.downloadTransactions()
+    .subscribe((result: any) => {
       console.log(result.data);
-      this.transactions = result.data?.transactions as Transaction[];
+      this.transactions = result.transactions as Transaction[];
       this.loading = result.loading;
       this.error = result.error;
     })
