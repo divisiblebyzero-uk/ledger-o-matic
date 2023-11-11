@@ -16,17 +16,15 @@
                         <tr>
                             <th>Name</th>
                             <th>Current Balance</th>
-                            <th>Type</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
                         <tr [ttRow]="rowNode">
                             <td>
                                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData.name }}
+                                <app-account-display [account]="rowData"></app-account-display>
                             </td>
                             <td><a (click)="showLedger(rowData.id)">{{ rowData.currentBalance|currency:'GBP' }}</a></td>
-                            <td>{{ rowData.accountType }}</td>
                         </tr>
                     </ng-template>
                 </p-treeTable>

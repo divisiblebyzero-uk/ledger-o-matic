@@ -48,8 +48,8 @@
                         <td>{{ transaction.transactionDate }}</td>
                         <td>{{ transaction.description }}</td>
                         <td style="text-align: right">{{ transaction.amount|currency:'GBP' }}</td>
-                        <td>{{ transaction.debitAccount.name }}</td>
-                        <td>{{ transaction.creditAccount.name }}</td>
+                        <td><app-account-display [account]="transaction.debitAccount" [compact]="true"></app-account-display></td>
+                        <td><app-account-display [account]="transaction.creditAccount" [compact]="true"></app-account-display></td>
                     </tr>
                 </ng-template>
             </p-table>

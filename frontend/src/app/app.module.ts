@@ -20,6 +20,8 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccountLedgerDataService } from './service/account-ledger-data-service';
+import { ProfitAndLossReportComponent } from './reports/profit-and-loss-report/profit-and-loss-report.component';
+import { AccountDisplayComponent } from './widgets/account-display/account-display.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { AccountLedgerDataService } from './service/account-ledger-data-service'
     AccountsSummaryComponent,
     AccountLedgerComponent,
     StyleDirective,
-    JournalComponent
+    JournalComponent,
+    ProfitAndLossReportComponent,
+    AccountDisplayComponent
   ],
   imports: [
     InputTextModule,

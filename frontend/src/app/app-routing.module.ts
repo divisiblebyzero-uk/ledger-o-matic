@@ -4,12 +4,14 @@ import { WelcomeScreenComponent } from './misc/welcome-screen/welcome-screen.com
 import { AccountsSummaryComponent } from './accounts/accounts-summary/accounts-summary.component';
 import { AccountLedgerComponent } from './accounts/account-ledger/account-ledger.component';
 import { JournalComponent } from './journal/journal/journal.component';
+import { ProfitAndLossReportComponent } from './reports/profit-and-loss-report/profit-and-loss-report.component';
 
 const routes: Routes = [
   { path: '', component: WelcomeScreenComponent },
   { path: 'accounts', component: AccountsSummaryComponent },
   { path: 'account-ledger/:accountId', component: AccountLedgerComponent },
   { path: 'journal', component: JournalComponent },
+  { path: 'pnlReport', component: ProfitAndLossReportComponent }
 ];
 
 @NgModule({

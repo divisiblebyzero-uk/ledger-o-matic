@@ -33,12 +33,12 @@ export class AccountLedgerDataService {
       return this.apollo.watchQuery( {
         query: gql`{
           accountLedger(accountId:${accountId},fromDate:"${fromDate.toISOString().split('T')[0]}", toDate:"${toDate.toISOString().split('T')[0]}") {
-            ledgerAccount{id, name}
+            ledgerAccount{id, name, accountType}
             description
             ledgerDate
             debitAmount
             creditAmount
-            transferAccount{id,name}
+            transferAccount{id,name,accountType}
             runningTotal
         }
       }`, errorPolicy: 'all'

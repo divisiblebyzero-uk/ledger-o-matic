@@ -43,8 +43,8 @@ export class JournalComponent implements OnInit {
         transactionDate
         description
         amount
-        debitAccount{id, name}
-        creditAccount{id, name}
+        debitAccount{id, name, accountType}
+        creditAccount{id, name, accountType}
       }}`,
     })
     .valueChanges.subscribe((result: any) => {

@@ -26,7 +26,7 @@
                         <td>{{ accountLedger.description }}</td>
                         <td style="text-align: right">{{ accountLedger.debitAmount|currency:'GBP' }}</td>
                         <td style="text-align: right">{{ accountLedger.creditAmount|currency:'GBP' }}</td>
-                        <td><a (click)="showLedger(accountLedger.transferAccount.id)">{{ accountLedger.transferAccount.name }}</a></td>
+                        <td><a (click)="showLedger(accountLedger.transferAccount.id)"><app-account-display [account]="accountLedger.transferAccount"></app-account-display></a></td>
                         <td style="text-align: right">{{ accountLedger.runningTotal|currency:'GBP' }}</td>
                     </tr>
                 </ng-template>
