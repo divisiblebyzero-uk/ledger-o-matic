@@ -17,6 +17,7 @@ type Transaction {
     debitAccount: Account,
     creditAccount: Account
 }
+
 type AccountLedger {
     ledgerAccount: Account,
     transaction: Transaction,
@@ -28,6 +29,11 @@ type AccountLedger {
     runningTotal: Float
 }
 
+type AccountTotal {
+    account: Account,
+    amount: Float
+}
+
 type Query {
     accounts:[Account]
     account(id: ID):Account
@@ -37,6 +43,9 @@ type Query {
     transactionsForAccount(accountId: ID):[Transaction]
 
     accountLedger(accountId: ID, fromDate: Date, toDate: Date):[AccountLedger]
+
+    sumCredits(accountType: String, fromDate: Date, toDate: Date):[AccountTotal]
+    sumDebits(accountType: String, fromDate: Date, toDate: Date):[AccountTotal]
 }
 
 enum AccountType {

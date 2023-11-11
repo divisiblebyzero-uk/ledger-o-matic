@@ -3,12 +3,8 @@ package uk.divisiblebyzero.ledger.controllers
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
-import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
-import uk.divisiblebyzero.ledger.model.Account
-import uk.divisiblebyzero.ledger.model.AccountLedger
-import uk.divisiblebyzero.ledger.model.AccountType
-import uk.divisiblebyzero.ledger.model.Transaction
+import uk.divisiblebyzero.ledger.model.*
 import uk.divisiblebyzero.ledger.service.AccountRepository
 import uk.divisiblebyzero.ledger.service.TransactionRepository
 import java.math.BigDecimal
@@ -52,5 +48,15 @@ public class TransactionGraphQLController(private val transactionRepository: Tra
         }
 
         return accountLedgers;
+    }
+
+    @QueryMapping
+    fun sumCredits(@Argument accountType: AccountType, @Argument fromDate: LocalDate, @Argument toDate: LocalDate): List<AccountTotal> {
+        logger.info("Running sumCredits with accountType: $accountType, fromDate: $fromDate, toDate: $toDate")
+        return transactionRepository.sumCredits(accountType, fromDate, toDate)
+    }
+    @QueryMapping
+    fun sumDebits(@Argument accountType: AccountType, @Argument fromDate: LocalDate, @Argument toDate: LocalDate): List<AccountTotal> {
+        return transactionRepository.sumDebits(accountType, fromDate, toDate)
     }
 }

@@ -52,21 +52,67 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         logger.info("Saving dummy data")
         createAccounts()
 
-        addTransaction(1, "Opening balance", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Opening Balances")
-        addTransaction(1, "Opening balance", BigDecimal(250000), debitAccount = "Opening Balances", creditAccount = "Mortgage")
+        addTransaction(
+            1,
+            "Opening balance",
+            BigDecimal(1000),
+            debitAccount = "Bank Account (Current)",
+            creditAccount = "Opening Balances"
+        )
+        addTransaction(
+            1,
+            "Opening balance",
+            BigDecimal(250000),
+            debitAccount = "Opening Balances",
+            creditAccount = "Mortgage"
+        )
 
         addTransaction(2, "Salary", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Salary")
-        addTransaction(3, "Dinner at restaurant", BigDecimal(100), debitAccount = "Dining Out", creditAccount = "Bank Account (Current)")
+        addTransaction(
+            3,
+            "Dinner at restaurant",
+            BigDecimal(100),
+            debitAccount = "Dining Out",
+            creditAccount = "Bank Account (Current)"
+        )
 
         addTransaction(15, "Mortgage interest", BigDecimal(250), debitAccount = "Interest", creditAccount = "Mortgage")
-        addTransaction(16, "Mortgage payment", BigDecimal(400), debitAccount = "Mortgage", creditAccount = "Bank Account (Current)")
+        addTransaction(
+            16,
+            "Mortgage payment",
+            BigDecimal(400),
+            debitAccount = "Mortgage",
+            creditAccount = "Bank Account (Current)"
+        )
+    }
+    fun printResults() {
 
         transactionRepository.findAll().forEach {
             logger.info("Transaction record: $it")
         }
 
-        transactionRepository.accountLedgerBetweenDates(accountRepository.findOneByName("Bank Account (Current)"), LocalDate.now().withDayOfMonth(1), LocalDate.now().withDayOfMonth(15)).forEach {
+        transactionRepository.accountLedgerBetweenDates(
+            accountRepository.findOneByName("Bank Account (Current)"),
+            LocalDate.now().withDayOfMonth(1),
+            LocalDate.now().withDayOfMonth(15)
+        ).forEach {
             logger.info("$it")
+        }
+
+        transactionRepository.sumCredits(
+            AccountType.INCOME,
+            LocalDate.now().withDayOfMonth(1),
+            LocalDate.now().withDayOfMonth(15)
+        ).forEach {
+            logger.info("${it.getAccount().name} - ${it.getAmount()}")
+        }
+
+        transactionRepository.sumDebits(
+            AccountType.EXPENSE,
+            LocalDate.now().withDayOfMonth(1),
+            LocalDate.now().withDayOfMonth(15)
+        ).forEach {
+            logger.info("${it.getAccount().name} - ${it.getAmount()}")
         }
     }
 }

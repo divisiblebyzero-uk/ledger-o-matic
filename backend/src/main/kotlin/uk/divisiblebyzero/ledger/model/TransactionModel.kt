@@ -34,3 +34,8 @@ open class AccountLedger (
         return "AccountLedger(ledgerAccount=${ledgerAccount.name}, transaction=${transaction.id}, description='$description', ledgerDate=$ledgerDate, debitAmount=$debitAmount, creditAmount=$creditAmount, transferAccount=${transferAccount.name}, runningTotal=$runningTotal, id=$id)"
     }
 }
+
+interface AccountTotal {
+    abstract fun getAccount(): Account
+    abstract fun getAmount(): BigDecimal
+}

@@ -20,6 +20,7 @@ open class Application {
     @Bean
     public open fun createDummyData(fakeDataCreator: FakeDataCreator) = CommandLineRunner {
         fakeDataCreator.createFakeData()
+        fakeDataCreator.printResults()
     }
 }
 fun main() {

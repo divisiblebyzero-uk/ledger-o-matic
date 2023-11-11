@@ -2,10 +2,7 @@ package uk.divisiblebyzero.ledger.service
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import uk.divisiblebyzero.ledger.model.Account
-import uk.divisiblebyzero.ledger.model.AccountLedger
-import uk.divisiblebyzero.ledger.model.AccountType
-import uk.divisiblebyzero.ledger.model.Transaction
+import uk.divisiblebyzero.ledger.model.*
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -42,4 +39,9 @@ interface TransactionRepository:JpaRepository<Transaction, Long> {
     @Query(value = "select ?1 as ledgerAccount, t as transaction, t.transactionDate as ledgerDate, t.description as description, 0 as debitAmount, 0 as creditAmount, ?1 as transferAccount from Transaction t ")
     abstract fun testIt(account: Account, fromDate: LocalDate, toDate: LocalDate): List<Array<Any>>
 
+    @Query(value = "select a as account, amount as amount from Transaction t, Account a where t.debitAccount = a and a.accountType = ?1 and t.transactionDate >= ?2 and t.transactionDate <= ?3")
+    abstract fun sumDebits(accountType: AccountType, fromDate: LocalDate, toDate: LocalDate): List<AccountTotal>
+
+    @Query(value = "select a as account, amount as amount from Transaction t, Account a where t.creditAccount = a and a.accountType = ?1 and t.transactionDate >= ?2 and t.transactionDate <= ?3")
+    abstract fun sumCredits(accountType: AccountType, fromDate: LocalDate, toDate: LocalDate): List<AccountTotal>
 }
