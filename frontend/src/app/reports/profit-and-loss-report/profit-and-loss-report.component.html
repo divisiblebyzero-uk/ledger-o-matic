@@ -5,41 +5,54 @@
         <hr class="my-4">
     </div>
     <div class="row">
-        <table class="table">
-            <tr>
-                <th>
-                    Account
-                </th>
-                <th *ngFor="let month of months">
-                    {{prettifyMonth(month)}}
-                </th>
-            </tr>
-            <tr>
-                <td colspan="2">INCOME</td>
-            </tr>
-            <tr *ngFor="let account of incomeAccounts">
-                <td>{{account.name}}</td>
-                <td *ngFor="let month of months">{{getMonthlyAmount(account, month)}}</td>
-            </tr>
-            <tr>
-                <td>Total Income</td>
-                <td *ngFor="let month of months">{{getMonthlyTotalByAccountType(month, "INCOME")}}</td>
-            </tr>
-            <tr>
-                <td colspan="2">EXPENSE</td>
-            </tr>
-            <tr *ngFor="let account of expenseAccounts">
-                <td>{{account.name}}</td>
-                <td *ngFor="let month of months">{{getMonthlyAmount(account, month)}}</td>
-            </tr>
-            <tr>
-                <td>Total Expense</td>
-                <td *ngFor="let month of months">{{getMonthlyTotalByAccountType(month, "EXPENSE")}}</td>
-            </tr>
-            <tr>
-                <td>Total</td>
-                <td *ngFor="let month of months">{{total}}</td>
-            </tr>
+        <table class="table table-striped">
+            <thead>
+                <tr class="table-secondary">
+                    <th colspan="2">
+                        Account
+                    </th>
+                    <th *ngFor="let month of months" style="text-align: right">
+                        {{prettifyMonth(month)}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Income</th>
+                    <td>&nbsp;</td>
+                    <td *ngFor="let month of months">&nbsp;</td>
+                </tr>
+                <tr *ngFor="let account of incomeAccounts">
+                    <td>&nbsp;</td>
+                    <td>{{account.name}}</td>
+                    <td *ngFor="let month of months" style="text-align: right">{{getMonthlyAmount(account, month)|currency:'GBP'}}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <th>Total Income</th>
+                    <td *ngFor="let month of months" style="text-align: right">{{getMonthlyTotalByAccountType(month, "INCOME")|currency:'GBP'}}</td>
+                </tr>
+                <tr>
+                    <th>Expense</th>
+                    <td>&nbsp;</td>
+                    <td *ngFor="let month of months">&nbsp;</td>
+                </tr>
+                <tr *ngFor="let account of expenseAccounts">
+                    <td>&nbsp;</td>
+                    <td>{{account.name}}</td>
+                    <td *ngFor="let month of months" style="text-align: right">{{getMonthlyAmount(account, month)|currency:'GBP'}}</td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Total Expense</th>
+                    <td *ngFor="let month of months" style="text-align: right">{{getMonthlyTotalByAccountType(month, "EXPENSE")|currency:'GBP'}}</td>
+                </tr>
+                <tr class="table-secondary">
+                    <th>Total</th>
+                    <td>&nbsp;</td>
+                    <td *ngFor="let month of months" style="text-align: right">{{getMonthlyTotal(month)|currency:'GBP'}}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>

@@ -62,6 +62,14 @@ export class ProfitAndLossReportComponent implements OnInit {
     return moment(month).format("MMM YY")
   }
 
+  getDirection(accountType: String) {
+    if (accountType == "INCOME") {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+
   wrangleSummaries() {
     this.months = this.monthlyAccountTotals.map(mat => mat.month);
     const allAccounts: ShortAccount[] = [...new Set(this.monthlyAccountTotals.map(mat => mat.accountTotals.map(at => at.account)).flat())];
@@ -70,15 +78,22 @@ export class ProfitAndLossReportComponent implements OnInit {
   } 
   
   getMonthlyAmount(account: ShortAccount, month: Date): number {
-    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.id == account.id)[0]?.amount;
+    const value = this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.id == account.id)[0]?.amount;
+    if (value) {
+      return value * this.getDirection(account.accountType);
+    } else {
+      return 0;
+    }
   }
 
   getMonthlyTotalByAccountType(month: Date, accountType: String): number {
-    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.accountType == accountType).map(at => at.amount).reduce((rt, a) => rt + a, 0)
+    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.accountType == accountType).map(at => at.amount).reduce((rt, a) => rt + a, 0) * this.getDirection(accountType);
   }
 
   getMonthlyTotal(month: Date): number {
-    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.map(at => at.amount).reduce((rt, a) => rt + a, 0)
+    return - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "EXPENSE")).map(at => at.amount).reduce((rt, a) => rt + a, 0) 
+     - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "INCOME")).map(at => at.amount).reduce((rt, a) => rt + a, 0)  
+    ;
   }
 
   watchTransactions(): void {
