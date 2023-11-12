@@ -34,6 +34,11 @@ type AccountTotal {
     amount: Float
 }
 
+type MonthlyAccountTotal {
+    month: Date,
+    accountTotals: [AccountTotal]
+}
+
 type Query {
     accounts:[Account]
     account(id: ID):Account
@@ -44,8 +49,7 @@ type Query {
 
     accountLedger(accountId: ID, fromDate: Date, toDate: Date):[AccountLedger]
 
-    sumCredits(accountType: String, fromDate: Date, toDate: Date):[AccountTotal]
-    sumDebits(accountType: String, fromDate: Date, toDate: Date):[AccountTotal]
+    monthlySummary(fromDate: Date, toDate: Date):[MonthlyAccountTotal]
 }
 
 enum AccountType {

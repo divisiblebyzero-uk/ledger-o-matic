@@ -32,3 +32,13 @@ export interface AccountLedger {
     transferAccount: {id: number, name: string},
     runningTotal: number
 }
+
+export interface AccountTotal {
+    account: {id: number, name: string, accountType: string},
+    amount: number
+}
+
+export interface MonthlyAccountTotal {
+    month: Date,
+    accountTotals: AccountTotal[]
+}

@@ -38,25 +38,22 @@ public class TransactionGraphQLController(private val transactionRepository: Tra
             logger.info("Account not found: $accountId")
             return ArrayList<AccountLedger>()
         }
-        var accountLedgers = transactionRepository.accountLedgerBetweenDates(account.get(), fromDate, toDate);
-        var startingBalance = transactionRepository.sumCreditTransactionsByAccountAtStartOfDate(account.get(), fromDate).times(BigDecimal(account.get().accountType.creditDirection))
-            .plus(transactionRepository.sumDebitTransactionsByAccountAtStartOfDate(account.get(), fromDate).times(BigDecimal(account.get().accountType.debitDirection)))
-        var runningTotal = startingBalance;
-        accountLedgers.forEach {
-            runningTotal = runningTotal.plus(it.creditAmount.times(BigDecimal(account.get().accountType.creditDirection))).plus(it.debitAmount.times(BigDecimal(account.get().accountType.debitDirection)))
-            it.runningTotal = runningTotal
+        return transactionRepository.accountLedgerBetweenDates(account.get(), fromDate, toDate);
+    }
+
+    @QueryMapping
+    fun monthlySummary(@Argument fromDate: LocalDate, @Argument toDate: LocalDate): List<MonthlyAccountTotal> {
+        logger.info("Running monthlySummary with fromDate: $fromDate, toDate: $toDate")
+
+        val list: MutableList<MonthlyAccountTotal> = mutableListOf<MonthlyAccountTotal>()
+
+        var monthStart: LocalDate = fromDate.withDayOfMonth(1);
+        while (monthStart < toDate) {
+            val monthEnd = monthStart.plusMonths(1).minusDays(1)
+            logger.info("Running sum for fromDate: $monthStart, toDate: $monthEnd")
+            list.add(MonthlyAccountTotal(monthStart, transactionRepository.sumByAccount(monthStart, monthEnd)))
+            monthStart = monthStart.plusMonths(1)
         }
-
-        return accountLedgers;
-    }
-
-    @QueryMapping
-    fun sumCredits(@Argument accountType: AccountType, @Argument fromDate: LocalDate, @Argument toDate: LocalDate): List<AccountTotal> {
-        logger.info("Running sumCredits with accountType: $accountType, fromDate: $fromDate, toDate: $toDate")
-        return transactionRepository.sumCredits(accountType, fromDate, toDate)
-    }
-    @QueryMapping
-    fun sumDebits(@Argument accountType: AccountType, @Argument fromDate: LocalDate, @Argument toDate: LocalDate): List<AccountTotal> {
-        return transactionRepository.sumDebits(accountType, fromDate, toDate)
+        return list
     }
 }

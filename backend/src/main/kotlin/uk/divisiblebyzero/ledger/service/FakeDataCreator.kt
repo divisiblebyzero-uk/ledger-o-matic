@@ -39,51 +39,55 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         accountService.accountHierarchy()
     }
 
-    fun addTransaction(dayOfMonth: Int, description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {
-        transactionRepository.save(Transaction(
-            transactionDate = LocalDate.now().withDayOfMonth(dayOfMonth),
-            description = description,
-            amount = amount,
-            debitAccount = accountRepository.findOneByName(debitAccount),
-            creditAccount = accountRepository.findOneByName(creditAccount)
-        ))
+    fun addTransaction(date: LocalDate, description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {
+        transactionRepository.save(
+            Transaction(
+                transactionDate = date,
+                description = description,
+                amount = amount,
+                debitAccount = accountRepository.findOneByName(debitAccount),
+                creditAccount = accountRepository.findOneByName(creditAccount)
+            )
+        )
+    }
+
+    fun addRecurringTransaction(startDate: LocalDate, recurringDays: Long, recurringMonths: Long, description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {
+        var date: LocalDate = startDate;
+        while (date <= LocalDate.now()) {
+            addTransaction(date, description, amount, debitAccount, creditAccount)
+            date = date.plusDays(recurringDays)
+            date = date.plusMonths(recurringMonths)
+        }
     }
     fun createFakeData() {
         logger.info("Saving dummy data")
         createAccounts()
 
         addTransaction(
-            1,
+            LocalDate.now().withDayOfYear(1),
             "Opening balance",
             BigDecimal(1000),
             debitAccount = "Bank Account (Current)",
             creditAccount = "Opening Balances"
         )
         addTransaction(
-            1,
+            LocalDate.now().withDayOfYear(1),
             "Opening balance",
             BigDecimal(250000),
             debitAccount = "Opening Balances",
             creditAccount = "Mortgage"
         )
 
-        addTransaction(2, "Salary", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Salary")
-        addTransaction(
-            3,
-            "Dinner at restaurant",
-            BigDecimal(100),
-            debitAccount = "Dining Out",
-            creditAccount = "Bank Account (Current)"
-        )
+        addRecurringTransaction(LocalDate.now().withDayOfYear(15), 0, 1, "Salary", BigDecimal(1000), debitAccount = "Bank Account (Current)", creditAccount = "Salary")
+        addRecurringTransaction(LocalDate.now().withDayOfYear(15), 0, 1, "Mortgage interest", BigDecimal(100), debitAccount = "Interest", creditAccount = "Mortgage")
+        addRecurringTransaction(LocalDate.now().withDayOfYear(20), 0, 1, "Mortgage monthly payment", BigDecimal(150), debitAccount = "Mortgage", creditAccount = "Bank Account (Current)")
 
-        addTransaction(15, "Mortgage interest", BigDecimal(250), debitAccount = "Interest", creditAccount = "Mortgage")
-        addTransaction(
-            16,
-            "Mortgage payment",
-            BigDecimal(400),
-            debitAccount = "Mortgage",
-            creditAccount = "Bank Account (Current)"
-        )
+        addRecurringTransaction(LocalDate.now().withDayOfYear(2), 0, 1, "ISP Bill", BigDecimal(20), debitAccount = "ISP", creditAccount = "Bank Account (Current)")
+        addRecurringTransaction(LocalDate.now().withDayOfYear(21), 0, 1, "Gas / Electic Bill", BigDecimal(90), debitAccount = "Gas / Electric", creditAccount = "Bank Account (Current)")
+        addRecurringTransaction(LocalDate.now().withDayOfYear(3), 4, 0, "Dinner at restaurant", BigDecimal(50), debitAccount = "Dining Out", creditAccount = "Bank Account (Current)")
+        addRecurringTransaction(LocalDate.now().withDayOfYear(3), 18, 0, "Buying clothes", BigDecimal(80), debitAccount = "Clothes", creditAccount = "Bank Account (Current)")
+
+        addRecurringTransaction(LocalDate.now().withDayOfYear(1), 0, 1, "Monthly savings", BigDecimal(200), debitAccount = "Bank Account (Savings)", creditAccount = "Bank Account (Current)")
     }
     fun printResults() {
 
@@ -93,10 +97,10 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
 
         transactionRepository.accountLedgerBetweenDates(
             accountRepository.findOneByName("Bank Account (Current)"),
-            LocalDate.now().withDayOfMonth(1),
+            LocalDate.now().withMonth(1).withDayOfMonth(1),
             LocalDate.now().withDayOfMonth(15)
         ).forEach {
-            logger.info("$it")
+            logger.info("${it.getLedgerDate()} ${it.getRunningTotal()} :: ${it.getLedgerAccount().name} --> ${it.getTransferAccount().name} ${it.getDebitAmount()} ${it.getCreditAmount()}")
         }
 
         transactionRepository.sumCredits(
@@ -114,5 +118,10 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         ).forEach {
             logger.info("${it.getAccount().name} - ${it.getAmount()}")
         }
+
+        transactionRepository.sumByAccount(
+            LocalDate.now().withDayOfMonth(1),
+            LocalDate.now().withDayOfMonth(15)
+        )
     }
 }

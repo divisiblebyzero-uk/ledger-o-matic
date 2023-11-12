@@ -12,30 +12,30 @@ class Transaction(
     @ManyToOne val debitAccount: Account,
     @ManyToOne val creditAccount: Account,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null
-)
-
-@Entity
-open class AccountLedger (
-    @ManyToOne
-    val ledgerAccount: Account,
-    @OneToOne
-    val transaction: Transaction,
-    val description: String,
-    val ledgerDate: LocalDate,
-    val debitAmount: BigDecimal,
-    val creditAmount: BigDecimal,
-    @ManyToOne
-    val transferAccount: Account,
-    var runningTotal: BigDecimal,
-    @Id
-    val id: Long? = null
 ) {
     override fun toString(): String {
-        return "AccountLedger(ledgerAccount=${ledgerAccount.name}, transaction=${transaction.id}, description='$description', ledgerDate=$ledgerDate, debitAmount=$debitAmount, creditAmount=$creditAmount, transferAccount=${transferAccount.name}, runningTotal=$runningTotal, id=$id)"
+        return "Transaction(transactionDate=$transactionDate, description='$description', amount=$amount, debitAccount=$debitAccount, creditAccount=$creditAccount, id=$id)"
     }
+}
+
+interface AccountLedger {
+    abstract fun getLedgerAccount(): Account
+    abstract fun getTransaction(): Transaction
+    abstract fun getDescription(): String
+    abstract fun getLedgerDate(): LocalDate
+    abstract fun getDebitAmount(): BigDecimal
+    abstract fun getCreditAmount(): BigDecimal
+    abstract fun getTransferAccount(): Account
+    abstract fun getRunningTotal(): BigDecimal
+
 }
 
 interface AccountTotal {
     abstract fun getAccount(): Account
     abstract fun getAmount(): BigDecimal
 }
+
+open class MonthlyAccountTotal (
+    val month: LocalDate,
+    val accountTotals: List<AccountTotal>
+)

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Transaction } from '../model/entities';
+import { MonthlyAccountTotal, Transaction } from '../model/entities';
 import { Observable, map } from 'rxjs';
 
 @Injectable({
@@ -43,4 +43,24 @@ export class TransactionsDataService {
       })
     );
   }
+
+  downloadMonthlyAccountTotals(fromDate: Date, toDate: Date): Observable<{ monthlyAccountTotals: MonthlyAccountTotal[], error: any, loading: boolean }> {
+    return this.apollo.watchQuery({
+      query: gql`{   monthlySummary(fromDate:"2023-01-01",toDate:"2023-11-30") {
+        month
+        accountTotals{
+          account {
+            id, name, accountType
+          }
+          amount
+        }
+      }}`, errorPolicy: 'all'
+    }).valueChanges.pipe(
+      map((result: any) => {
+        return { monthlyAccountTotals: result.data?.monthlySummary as MonthlyAccountTotal[], error: result.error || result.errors, loading: result.loading };
+      })
+    );
+  }
+
+
 }

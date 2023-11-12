@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Account, Transaction } from 'src/app/model/entities';
 import { Table } from 'primeng/table';
 import { TransactionsDataService } from 'src/app/service/transactions-data.service';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-journal',
@@ -40,7 +41,7 @@ export class JournalComponent implements OnInit {
     this.transactionsDataService.downloadTransactions()
     .subscribe((result: any) => {
       console.log(result.data);
-      this.transactions = result.transactions as Transaction[];
+      this.transactions = (result.transactions as Transaction[]).map(t => { return {...t}; });
       this.loading = result.loading;
       this.error = result.error;
     })

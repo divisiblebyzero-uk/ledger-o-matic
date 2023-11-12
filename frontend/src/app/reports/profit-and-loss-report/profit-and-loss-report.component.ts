@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Account, Transaction } from 'src/app/model/entities';
+import { Account, MonthlyAccountTotal, Transaction } from 'src/app/model/entities';
 import { TransactionsDataService } from 'src/app/service/transactions-data.service';
+import * as moment from 'moment'
 
 export interface ShortAccount {
   id: number,
@@ -21,6 +22,10 @@ export class ProfitAndLossReportComponent implements OnInit {
   public error: any;
 
   public transactions!: Transaction[];
+  public monthlyAccountTotals!: MonthlyAccountTotal[];
+  public months!: Date[];
+  public incomeAccounts!: ShortAccount[];
+  public expenseAccounts!: ShortAccount[];
 
   public fromDate!: Date;
   public toDate!: Date;
@@ -53,35 +58,35 @@ export class ProfitAndLossReportComponent implements OnInit {
     return res;
   }
 
-  wrangleTransactions() {
-    
-    this.incomeSummaries = this.sumByKey(this.transactions.filter(t => { return t.debitAccount.accountType == "INCOME"}).map(t => {return {account: t.debitAccount, amount: -t.amount}}), 'account', 'amount') as AccountSummary[];
-    (this.sumByKey(this.transactions.filter(t => { return t.creditAccount.accountType == "INCOME"}).map(t => {return {account: t.creditAccount, amount: t.amount}}), 'account', 'amount') as AccountSummary[]).forEach(element => {
-      this.incomeSummaries.push(element);      
-    });
+  prettifyMonth(month: Date): string {
+    return moment(month).format("MMM YY")
+  }
 
-    this.expenseSummaries = this.sumByKey(this.transactions.filter(t => { return t.debitAccount.accountType == "EXPENSE"}).map(t => {return {account: t.debitAccount, amount: t.amount}}), 'account', 'amount') as AccountSummary[];
-    (this.sumByKey(this.transactions.filter(t => { return t.creditAccount.accountType == "EXPENSE"}).map(t => {return {account: t.creditAccount, amount: -t.amount}}), 'account', 'amount') as AccountSummary[]).forEach(element => {
-      this.expenseSummaries.push(element);      
-    });
+  wrangleSummaries() {
+    this.months = this.monthlyAccountTotals.map(mat => mat.month);
+    const allAccounts: ShortAccount[] = [...new Set(this.monthlyAccountTotals.map(mat => mat.accountTotals.map(at => at.account)).flat())];
+    this.incomeAccounts = allAccounts.filter(acc => acc.accountType === "INCOME");
+    this.expenseAccounts = allAccounts.filter(acc => acc.accountType === "EXPENSE");
+  } 
+  
+  getMonthlyAmount(account: ShortAccount, month: Date): number {
+    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.id == account.id)[0]?.amount;
+  }
 
-    var incomeCredits = this.transactions.filter(t => { return t.creditAccount.accountType == "INCOME"}).map(t => t.amount).reduce((rt, a) => rt + a, 0);
-    var incomeDebits = this.transactions.filter(t => { return t.debitAccount.accountType == "INCOME"}).map(t => t.amount).reduce((rt, a) => rt + a, 0);
-    this.incomeTotal = incomeCredits - incomeDebits;
+  getMonthlyTotalByAccountType(month: Date, accountType: String): number {
+    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.accountType == accountType).map(at => at.amount).reduce((rt, a) => rt + a, 0)
+  }
 
-    var expenseCredits = this.transactions.filter(t => { return t.creditAccount.accountType == "EXPENSE"}).map(t => t.amount).reduce((rt, a) => rt + a, 0);
-    var expenseDebits = this.transactions.filter(t => { return t.debitAccount.accountType == "EXPENSE"}).map(t => t.amount).reduce((rt, a) => rt + a, 0);
-    this.expenseTotal = expenseDebits - expenseCredits;
-
-    this.total = this.incomeTotal - this.expenseTotal;
+  getMonthlyTotal(month: Date): number {
+    return this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.map(at => at.amount).reduce((rt, a) => rt + a, 0)
   }
 
   watchTransactions(): void {
-    this.transactionsDataService.downloadTransactionsBetweenDates(this.fromDate, this.toDate).subscribe((result: any) => {
-      this.transactions = result.transactions as Transaction[];
+    this.transactionsDataService.downloadMonthlyAccountTotals(this.fromDate, this.toDate).subscribe((result: any) => {
+      this.monthlyAccountTotals = result.monthlyAccountTotals as MonthlyAccountTotal[];
       this.loading = result.loading;
       this.error = result.error;
-      this.wrangleTransactions();
+      this.wrangleSummaries();
     })
   }
 

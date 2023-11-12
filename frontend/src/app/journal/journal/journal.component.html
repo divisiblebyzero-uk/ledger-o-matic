@@ -22,6 +22,8 @@
                 [paginator]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [globalFilterFields]="['id', 'description', 'transactionDate', 'amount', 'debitAccount.name', 'creditAccount.name']"
+                sortField="transactionDate"
+                [sortOrder]="-1"
                 >
                 <ng-template pTemplate="caption">
                     <div class="flex">
@@ -35,7 +37,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Id<p-columnFilter type="numeric" field="id" display="menu"></p-columnFilter></th>
-                        <th>Transaction Date<p-columnFilter type="date" field="transactionDate" display="menu"></p-columnFilter></th><!-- TODO - sort out the date search -->
+                        <th pSortableColumn="transactionDate">Transaction Date<p-sortIcon field="transactionDate"></p-sortIcon><p-columnFilter type="date" field="transactionDate" display="menu"></p-columnFilter></th><!-- TODO - sort out the date search -->
                         <th>Description<p-columnFilter type="text" field="description" display="menu"></p-columnFilter></th>
                         <th style="text-align: right">Amount<p-columnFilter type="numeric" field="amount" display="menu"></p-columnFilter></th>
                         <th>Debit Account<p-columnFilter type="text" field="debitAccount.name" display="menu"></p-columnFilter></th>

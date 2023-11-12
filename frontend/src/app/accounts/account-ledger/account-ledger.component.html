@@ -9,10 +9,10 @@
     <div *ngIf="error||accountError">Error!</div>
     <div *ngIf="accountLedgers">
         <div class="card">
-            <p-table [value]="accountLedgers" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [value]="accountLedgers" [tableStyle]="{ 'min-width': '50rem' }" sortField="ledgerDate" [sortOrder]="-1">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Transaction Date</th>
+                        <th pSortableColumn="ledgerDate">Transaction Date<p-sortIcon field="ledgerDate"></p-sortIcon></th>
                         <th>Description</th>
                         <th style="text-align: right">DR</th>
                         <th style="text-align: right">CR</th>

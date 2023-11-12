@@ -10,35 +10,35 @@
                 <th>
                     Account
                 </th>
-                <th>
-                    Amount
+                <th *ngFor="let month of months">
+                    {{prettifyMonth(month)}}
                 </th>
             </tr>
             <tr>
                 <td colspan="2">INCOME</td>
             </tr>
-            <tr *ngFor="let summary of incomeSummaries">
-                <td>{{summary.account.name}}</td>
-                <td>{{summary.amount}}</td>
+            <tr *ngFor="let account of incomeAccounts">
+                <td>{{account.name}}</td>
+                <td *ngFor="let month of months">{{getMonthlyAmount(account, month)}}</td>
             </tr>
             <tr>
                 <td>Total Income</td>
-                <td>{{incomeTotal}}</td>
+                <td *ngFor="let month of months">{{getMonthlyTotalByAccountType(month, "INCOME")}}</td>
             </tr>
             <tr>
                 <td colspan="2">EXPENSE</td>
             </tr>
-            <tr *ngFor="let summary of expenseSummaries">
-                <td>{{summary.account.name}}</td>
-                <td>{{summary.amount}}</td>
+            <tr *ngFor="let account of expenseAccounts">
+                <td>{{account.name}}</td>
+                <td *ngFor="let month of months">{{getMonthlyAmount(account, month)}}</td>
             </tr>
             <tr>
                 <td>Total Expense</td>
-                <td>{{expenseTotal}}</td>
+                <td *ngFor="let month of months">{{getMonthlyTotalByAccountType(month, "EXPENSE")}}</td>
             </tr>
             <tr>
                 <td>Total</td>
-                <td>{{total}}</td>
+                <td *ngFor="let month of months">{{total}}</td>
             </tr>
         </table>
     </div>

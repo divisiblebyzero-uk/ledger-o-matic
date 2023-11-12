@@ -29,6 +29,7 @@ export class AccountLedgerComponent implements OnInit {
   constructor(private apollo: Apollo, private route: ActivatedRoute, private dataService: AccountLedgerDataService, private router: Router) {
     this.fromDate = new Date();
     this.fromDate.setDate(1);
+    this.fromDate.setMonth(0);
     this.toDate = new Date();
   }
 
@@ -38,7 +39,7 @@ export class AccountLedgerComponent implements OnInit {
 
   getTransactions(accountId: number): void {
     this.dataService.downloadAccountLedger(accountId, this.fromDate, this.toDate).subscribe(x => {
-      this.accountLedgers = x.accountLedgers;
+      this.accountLedgers = x.accountLedgers.map(l => { return {...l}; });
       this.error = x.error;
       this.loading = x.loading;
     });
