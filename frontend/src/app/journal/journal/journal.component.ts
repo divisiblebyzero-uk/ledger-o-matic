@@ -40,7 +40,6 @@ export class JournalComponent implements OnInit {
   watchTransactions(): void {
     this.transactionsDataService.downloadTransactions()
     .subscribe((result: any) => {
-      console.log(result.data);
       this.transactions = (result.transactions as Transaction[]).map(t => { return {...t}; });
       this.loading = result.loading;
       this.error = result.error;

@@ -10,7 +10,7 @@ import java.math.RoundingMode
 import java.time.LocalDate
 
 @Service
-class FakeDataCreator(val accountRepository: AccountRepository, val accountService: AccountService, val transactionRepository: TransactionRepository) {
+class FakeDataCreator(val accountRepository: AccountRepository, val transactionRepository: TransactionRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
     fun createAccounts() {
         val assets: Account = accountRepository.save(Account("Current Assets", AccountType.ASSET))
@@ -38,7 +38,6 @@ class FakeDataCreator(val accountRepository: AccountRepository, val accountServi
         logger.info("Count of accounts: " + accountRepository.count())
 
         accountRepository.findAll().forEach { logger.info("Account: " + it.toString()) }
-        accountService.accountHierarchy()
     }
 
     fun addTransaction(date: LocalDate, description: String, amount: BigDecimal, debitAccount: String, creditAccount: String) {

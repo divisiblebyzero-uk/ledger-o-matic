@@ -40,12 +40,43 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <!-- misc -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ninja-squad</groupId>
+            <artifactId>springmockk</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

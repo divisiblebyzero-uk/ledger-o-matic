@@ -5,10 +5,6 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import uk.divisiblebyzero.ledger.model.Account
-import uk.divisiblebyzero.ledger.model.AccountType
-import uk.divisiblebyzero.ledger.service.AccountRepository
-import uk.divisiblebyzero.ledger.service.AccountService
 import uk.divisiblebyzero.ledger.service.FakeDataCreator
 
 

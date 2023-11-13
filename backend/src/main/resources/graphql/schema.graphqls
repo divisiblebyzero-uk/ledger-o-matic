@@ -13,7 +13,7 @@ type Transaction {
     id: ID!,
     transactionDate: Date,
     description: String,
-    amount: Int,
+    amount: Float,
     debitAccount: Account,
     creditAccount: Account
 }
