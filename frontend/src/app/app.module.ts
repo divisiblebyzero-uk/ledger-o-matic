@@ -22,6 +22,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AccountLedgerDataService } from './service/account-ledger-data-service';
 import { ProfitAndLossReportComponent } from './reports/profit-and-loss-report/profit-and-loss-report.component';
 import { AccountDisplayComponent } from './widgets/account-display/account-display.component';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { AccountDisplayComponent } from './widgets/account-display/account-displ
     HttpClientModule,
     TableModule,
     TreeModule,
-    TreeTableModule
+    TreeTableModule,
+    ChartModule
   ],
   providers: [AccountTreeDataService, AccountLedgerDataService],
   bootstrap: [AppComponent]

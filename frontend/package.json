@@ -23,6 +23,7 @@
     "@popperjs/core": "^2.11.6",
     "apollo-angular": "^5.0.2",
     "bootstrap": "^5.2.3",
+    "chart.js": "^4.4.0",
     "graphql": "^16",
     "moment": "^2.29.4",
     "ngx-moment": "^6.0.2",

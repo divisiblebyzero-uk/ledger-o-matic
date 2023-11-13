@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Account, MonthlyAccountTotal, Transaction } from 'src/app/model/entities';
+import { MonthlyAccountTotal, Transaction } from 'src/app/model/entities';
 import { TransactionsDataService } from 'src/app/service/transactions-data.service';
 import * as moment from 'moment'
+import { ChartData } from 'chart.js';
+
 
 export interface ShortAccount {
   id: number,
@@ -48,15 +50,41 @@ export class ProfitAndLossReportComponent implements OnInit {
     this.toDate = new Date();
   }
 
-  sumByKey = (arr: any[], key: string, value: string) => {
-    const map = new Map();
-    for(const obj of arr) {
-      const currSum = map.get(obj[key]) || 0;
-      map.set(obj[key], currSum + obj[value]);
+  chartOptions = {
+    plugins: {
+      legend: {
+      }
+    },
+    scales: {
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        grid: {
+          drawBorder: false
+        }
+      },
+      x: {
+        stacked: true,
+        grid: {
+          drawBorder: false
+        }
+      }
     }
-    const res = Array.from(map, ([k, v]) => ({[key]: k, [value]: v}));
-    return res;
-  }
+  };
+
+  chartData: ChartData = {
+    labels: [],
+    datasets: [
+      {
+        label: 'Sales',
+        data: [540, 325, 702, 620],
+        backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+        borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
+        borderWidth: 1
+      }
+    ]
+  };
+
 
   prettifyMonth(month: Date): string {
     return moment(month).format("MMM YY")
@@ -72,11 +100,26 @@ export class ProfitAndLossReportComponent implements OnInit {
 
   wrangleSummaries() {
     this.months = this.monthlyAccountTotals.map(mat => mat.month);
+    this.chartData.labels = this.months.map(m => this.prettifyMonth(m));
+
+
     const allAccounts: ShortAccount[] = [...new Set(this.monthlyAccountTotals.map(mat => mat.accountTotals.map(at => at.account)).flat())];
     this.incomeAccounts = allAccounts.filter(acc => acc.accountType === "INCOME");
     this.expenseAccounts = allAccounts.filter(acc => acc.accountType === "EXPENSE");
-  } 
-  
+
+    this.chartData.datasets = [];
+    this.incomeAccounts.forEach(sa => {
+      this.chartData.datasets.push( {label: sa.name, data: this.months.map(month => this.getMonthlyAmount(sa, month)), stack: 'Income'});
+    });
+
+    this.expenseAccounts.forEach(sa => {
+      this.chartData.datasets.push( {label: sa.name, data: this.months.map(month => this.getMonthlyAmount(sa, month)), stack: 'Expense'});
+    });
+
+    this.chartData = {...this.chartData};
+
+  }
+
   getMonthlyAmount(account: ShortAccount, month: Date): number {
     const value = this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => at.account.id == account.id)[0]?.amount;
     if (value) {
@@ -91,9 +134,9 @@ export class ProfitAndLossReportComponent implements OnInit {
   }
 
   getMonthlyTotal(month: Date): number {
-    return - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "EXPENSE")).map(at => at.amount).reduce((rt, a) => rt + a, 0) 
-     - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "INCOME")).map(at => at.amount).reduce((rt, a) => rt + a, 0)  
-    ;
+    return - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "EXPENSE")).map(at => at.amount).reduce((rt, a) => rt + a, 0)
+      - this.monthlyAccountTotals.filter(mat => mat.month == month)[0]?.accountTotals.filter(at => (at.account.accountType == "INCOME")).map(at => at.amount).reduce((rt, a) => rt + a, 0)
+      ;
   }
 
   watchTransactions(): void {
@@ -105,7 +148,7 @@ export class ProfitAndLossReportComponent implements OnInit {
     })
   }
 
-  public loadData():void {
+  public loadData(): void {
     this.watchTransactions();
   }
 
