@@ -9,6 +9,7 @@ enum class AccountType(val id: String, val debitDirection: Int, val creditDirect
     EXPENSE("expense", 1, -1),
     INCOME("income", -1, 1),
     LIABILITY("liability", -1, 1),
+    CREDIT("credit", -1, 1),
     BANK("bank", 1, -1)
 }
 @Entity
